@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<body>
+<style>
+h2 {text-align: center;}
+
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  padding-right: 40px;
+}
+tr:nth-child(even) {background-color: #f2f2f2;}
+</style>
+
+<h1>Facilgo Completed Jobs</h1>
+
+<form action="" method="post">
+  {% csrf_token %}
+  <label for="from_date">From Date:</label>
+  <input type="date" id="from_date" name="from_date">
+   <label for="to_date">To Date:</label>
+  <input type="date" id="to_date" name="to_date">
+  <input type="submit">&nbsp
+  <input type="checkbox" name="new_records" value="new_records" checked>
+  <label for="new_records"> New Records</label>&nbsp
+  <input type="checkbox" name="error_records" value="error_records" checked>
+  <label for="error_records"> Error Records</label><br><br>
+  <label for="field">Choose your required field:</label>
+  <select name="field" id="field">
+    <option value="">--Please choose an option--</option>
+    <option value="started">Started</option>
+    <option value="completed">Completed</option>
+  </select>
+</form>
+
+  <h2>Summary Details</h2>
+  <table class="center">
+    <thead>
+    <tr>
+      <th>scrapper_id</th>
+      <th>scrapper_jobs_log_id</th>
+      <th>external_job_source_id</th>
+      <th>start_time</th>
+      <th>end_time</th>
+      <th>scrapper_status</th>
+      <th>processed_records</th>
+      <th>new_records</th>
+      <th>skipped_records</th>
+      <th>error_records</th>
+    </tr>
+    </thead>
+    <tbody>
+	{% for stud in scrappers %}
+    {% csrf_token %}
+      <tr>
+        <td>{{stud.scrapper_id}}</td>
+        <td>{{stud.scrapper_jobs_log_id}}</td>
+		<td>{{stud.external_job_source_id}}</td>
+		<td>{{stud.start_time}}</td>
+        {% if  stud.end_time == None %}
+          <td style="color:red">No result</td>
+        {% else %}
+		  <td>{{stud.end_time}}</td>
+        {% endif %}
+        {% if  stud.scrapper_status == "1" %}
+          <td>{{stud.scrapper_status}} --> Started</td>
+        {% else %}
+		  <td>{{stud.scrapper_status}} --> Completed</td>
+        {% endif %}
+        <td>{{stud.processed_records}}</td>
+		<td>{{stud.new_records}}</td>
+		<td>{{stud.skipped_records}}</td>
+        <td>{{stud.error_records}}</td>
+      </tr>
+    {% endfor %}
+	</tbody>
+  </table>
+<script>
+  var datePickers = document.querySelectorAll("input[type=date]"), i;
+for (i = 0; i < datePickers.length; ++i) {
+  datePickers[i].valueAsDate = new Date();
+}
+</script>
+</body>
+</html>
